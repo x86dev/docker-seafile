@@ -2,6 +2,7 @@ Docker image for Seafile
 --------------------
 
 This Dockerfile installs [Seafile](https://www.seafile.com) with HTTPS (TLS) enabled by default.
+
 Idea and initial Dockerfile was based on https://github.com/alvistar/seafile-docker
 
 ## Features
@@ -77,6 +78,8 @@ Almost done! Now actually run Seafile using the database and the volume with:
 
 Seafile should now be running on your host at 
 
+```
 https://<yourhost>:8080
+```
 
 Congrats, you're now running Seafile using your self-signed certificate!
