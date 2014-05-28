@@ -1,13 +1,14 @@
 Docker image for Seafile
 --------------------
 
-This Dockerfile installs [Seafile](https://www.seafile.com) with HTTPS (TLS) enabled by default.
+This Dockerfile installs [Seafile](https://www.seafile.com) 3.x with HTTPS (TLS) enabled by default.
 
 Idea and initial Dockerfile was based on https://github.com/alvistar/seafile-docker
 
 ## Features
 
-The image contains the following:
+The image contains/adds the following:
+- Support for Seafile 3.x
 - Nginx for TLS (HTTPS) support
 - Self-signed certificates, generated automatically on first run
 - Runit for keeping the services up and running
