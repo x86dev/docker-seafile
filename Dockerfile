@@ -1,7 +1,13 @@
 FROM phusion/baseimage
-MAINTAINER Alessandro Viganò
+# Initially was based on work of Alessandro Viganò
+MAINTAINER Andreas Löffler <andy@x86dev.com>
 
-#EXPOSE 10001 12001 8000 8082
+RUN export DEBIAN_FRONTEND=noninteractive && \
+    apt-get update && \
+    apt-get install -y ca-certificates \
+                       nginx \
+                       python2.7-mysqldb python-setuptools python-simplejson python-imaging \
+                       sqlite3 dnsmasq
 
 ENV SERVER_NAME example
 ENV SERVER_ADDR seafile.example.com
@@ -10,41 +16,40 @@ ENV ADMIN_PASSWORD changeme!
 
 RUN mkdir /opt/seafile
 WORKDIR /opt/seafile
-RUN curl -L -O https://bitbucket.org/haiwen/seafile/downloads/seafile-server_2.1.5_x86-64.tar.gz
+RUN curl -L -O https://bitbucket.org/haiwen/seafile/downloads/seafile-server_3.0.3_x86-64.tar.gz
 RUN tar xzf seafile-server_*
 RUN mkdir installed
 RUN mv seafile-server_* installed
 
-
-RUN export DEBIAN_FRONTEND=noninteractive && \
-    apt-get update && \
-    apt-get install -y python2.7-mysqldb python-setuptools python-simplejson python-imaging sqlite3 && \
-    apt-get install -y dnsmasq
-
-RUN apt-get install -y tmux
-
-#DNSMASQ SERVICE
+# Install DnsMasq service.
 RUN mkdir /etc/service/dnsmasq
-ADD dnsmasq.sh /etc/service/dnsmasq/run
+ADD service-dnsmasq.sh /etc/service/dnsmasq/run
 
-#SEAFILE SERVICES
+# Install Seafile service.
 RUN mkdir /etc/service/seafile
-ADD seafilestart.sh /etc/service/seafile/run
-ADD seafilestop.sh /etc/service/seafile/stop
-RUN touch /etc/service/seafile/down
+ADD service-seafile-run.sh /etc/service/seafile/run
+ADD service-seafile-stop.sh /etc/service/seafile/stop
 
+# Install Seahub service.
 RUN mkdir /etc/service/seahub
-ADD seahubstart.sh /etc/service/seahub/run
-ADD seahubstop.sh /etc/service/seahub/stop
-RUN touch /etc/service/seahub/down
+ADD service-seahub-run.sh /etc/service/seahub/run
+ADD service-seahub-stop.sh /etc/service/seahub/stop
+
+# Install Nginx.
+RUN mkdir /etc/service/nginx
+ADD service-nginx.sh /etc/service/nginx/run
+ADD seafile-nginx.conf /etc/nginx/sites-available/seafile
+
+# Expose needed ports.
+EXPOSE 10001 12001 8000 8082
 
 RUN mkdir /opt/seafile/logs
 
+VOLUME /etc
 VOLUME /opt/seafile
 VOLUME /etc/service/seafile
 VOLUME /etc/service/seahub
 
-ADD bootstrap.sh /usr/local/bin/bootstrap
-
+ADD bootstrap-data.sh /usr/local/sbin/bootstrap
 CMD /sbin/my_init
 EXPOSE 22
