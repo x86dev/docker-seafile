@@ -28,6 +28,7 @@ Create the MySQL database container by running:
     docker run -d -p 3306:3306 -e MYSQL_ROOT_PASSWORD=<password> -e MYSQL_DATABASE=seafile -e MYSQL_USER=seafile --name seafile-db orchardup/mysql
 ```
 This will create the needed container, based on [orchardup/mysql](https://index.docker.io/u/orchardup/mysql/)
+
 As we need the IP of your database container later, look it up by doing a
 
 ```bash
@@ -42,11 +43,13 @@ Now, create the actual Seafile volume (for storing the actual data), using:
 
 **Note:** The <yourdomain.tld> should either point to a IP or valid domain you want to run Seafile on. If you're running Docker on
 your localhost you simply can specify _127.0.0.1_.
+
 **Bonus:** If you want to specify a different port than _8080_, add the parameter
 ```
 SEAFILE_DOMAIN_PORT=<yourport>
 ```
 to the command line above. Don't forget to change the port at the final command later on though! 
+
 The script which now runs will ask a few questions to correctly set up all the things for you, in particular:
 ```
 "What is the name of the server?"
@@ -64,7 +67,7 @@ domain of your server you're running Docker on.
 ```
 Hint: Enter the IP of your **seafile-db** container, e.g. 172.17.0.2. Remember the step from above?
 
-**Important: For all other questions just accept the defaults by pressing [ENTER]
+**Important:** For all other questions just accept the defaults by pressing [ENTER]
 
 Almost done! Now actually run Seafile using the database and the volume with:
 
@@ -72,5 +75,8 @@ Almost done! Now actually run Seafile using the database and the volume with:
     docker run -d -t --dns=127.0.0.1 -p 10001:10001 -p 8082:8082 -p 12001:12001 -p 8080:8080 --volumes-from seafile-data --link seafile-db:db --name seafile x86dev/docker-seafile
 ```
 
-Seafile should now be running on your host at https://<yourhost>:8080
+Seafile should now be running on your host at 
+
+https://<yourhost>:8080
+
 Congrats, you're now running Seafile using your self-signed certificate!
