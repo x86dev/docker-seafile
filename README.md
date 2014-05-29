@@ -27,7 +27,7 @@ your installation.
 
 Create the MySQL database container by running: 
 ```bash
-    docker run -d -p 3306:3306 -e MYSQL_ROOT_PASSWORD=<password> -e MYSQL_DATABASE=seafile -e MYSQL_USER=seafile --name seafile-db orchardup/mysql
+    docker run -d -p 3306:3306 -e MYSQL_ROOT_PASSWORD=<password> -e MYSQL_DATABASE=seafile -e MYSQL_USER=seafile -e MYSQL_PASSWORD=<password> --name seafile-db orchardup/mysql
 ```
 This will create the needed container, based on [orchardup/mysql](https://index.docker.io/u/orchardup/mysql/). This also assumes that you're
 not yet running another database at port 3306 on your host. In case you do, e.g. use
