@@ -1,7 +1,7 @@
 #!/bin/sh
 
-set -eu
-set -x
+# Note: Don't set "-u" here; we might check for unset environment variables!
+set -e
 
 # Generate the TLS certificate for our Seafile server instance.
 SEAFILE_CERT_PATH=/etc/nginx/certs
@@ -21,7 +21,8 @@ if [ -z "$SEAFILE_DOMAIN_PORT" ]; then
     SEAFILE_DOMAIN_PORT=8080
 fi
 
-# Enable Seafile in the Nginx configuration.
+# Enable Seafile in the Nginx configuration. Nginx then will serve Seafile
+# over HTTPS (TLS).
 ln -s /etc/nginx/sites-available/seafile /etc/nginx/sites-enabled/seafile
 rm /etc/nginx/sites-enabled/default
 sed -i -e "s/%SEAFILE_DOMAIN_NAME%/"$SEAFILE_DOMAIN_NAME"/g" /etc/nginx/sites-available/seafile
@@ -33,10 +34,13 @@ sed -i -e "s/%SEAFILE_DOMAIN_PORT%/"$SEAFILE_DOMAIN_PORT"/g" /etc/nginx/sites-av
 sed -i -e "s/daemon\s*=\s*True/daemon = False/g" \
     /opt/seafile/seafile-server-*/runtime/seahub.conf
 
-# Patch Seafile's CCNet configuration to point to our HTTPS site.
-sed -i -e "s/SERVICE_URL\s*=\s*/SERVICE_URL = https://$SEAFILE_DOMAIN_NAME:$SEAFILE_DOMAIN_PORT/g" \
-    /opt/seafile/ccnet/ccnet.conf
-
 # Execute Seafile's configuration script for setting up the database.
 cd /opt/seafile/seafile-server-*
 exec ./setup-seafile-mysql.sh
+
+# After configuring Seafile, patch Seafile's CCNet configuration to point to our HTTPS site.
+sed -i -e "s/SERVICE_URL\s*=\s*/SERVICE_URL = https:\/\/$SEAFILE_DOMAIN_NAME:$SEAFILE_DOMAIN_PORT/g" \
+    /opt/seafile/ccnet/ccnet.conf
+
+# Manually run Seahub's first-run configuration by starting the service.
+exec ./seahub.sh start-fastcgi
