@@ -36,7 +36,7 @@ not yet running another database at port 3306 on your host. In case you do, e.g.
 ```
 to expose the database' internal port 3306 to 3307 on your host.
 
-As we need the IP of your database container later, look it up by doing a
+As we need the IP of your database container later, look it up by doing a:
 
 ```bash
 docker inspect "seafile-db" | grep IPAddress | cut -d '"' -f 4
@@ -74,7 +74,7 @@ domain of your server you're running Docker on.
 ```
 Hint: Enter the IP of your **seafile-db** container, e.g. 172.17.0.2. Remember the step from above?
 
-**Important:** For all other questions just accept the defaults by pressing [ENTER]
+**Important:** For all other questions just accept the defaults by pressing _[ENTER]_.
 
 Almost done! Now actually run Seafile using the database and the volume with:
 

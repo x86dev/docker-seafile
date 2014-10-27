@@ -7,7 +7,7 @@ set -e
 SEAFILE_CERT_PATH=/etc/nginx/certs
 mkdir -p "$SEAFILE_CERT_PATH"
 openssl req -new -newkey rsa:2048 -days 3650 -nodes -x509 \
-    -subj "/C=US/ST=World/L=World/O=seafile/CN=seafile" \
+    -subj "/C=US/ST=World/L=World/O=seafile/CN=$SEAFILE_DOMAIN_NAME" \
     -keyout "$SEAFILE_CERT_PATH/seafile.key" \
     -out "$SEAFILE_CERT_PATH/seafile.crt"
 chmod 600 "$SEAFILE_CERT_PATH/seafile.key"
@@ -34,7 +34,7 @@ sed -i -e "s/.*server_tokens.*/server_tokens off;/g" /etc/nginx/nginx.conf
 # Patch Seahub's configuration to not run in daemonized mode. This is necessary
 # for whatever reason to not letting it abort.
 ## @todo Fix this!
-sed -i -e "s/daemon\s*=\s*True/daemon = False/g" \
+sed -i -e "s/.*daemon.*=.*/daemon = False/g" \
     /opt/seafile/seafile-server-*/runtime/seahub.conf
 
 # Execute Seafile's configuration script for setting up the database.
@@ -42,8 +42,12 @@ cd /opt/seafile/seafile-server-*
 ./setup-seafile-mysql.sh
 
 # After configuring Seafile, patch Seafile's CCNet configuration to point to our HTTPS site.
-sed -i -e "s/SERVICE_URL\s*=\s*/SERVICE_URL = https:\/\/$SEAFILE_DOMAIN_NAME:$SEAFILE_DOMAIN_PORT/g" \
+sed -i -e "s/.*SERVICE_URL.*=.*/SERVICE_URL = https:\/\/$SEAFILE_DOMAIN_NAME:$SEAFILE_DOMAIN_PORT/g" \
     /opt/seafile/ccnet/ccnet.conf
+
+# Also patch Seahub's configuration to use HTTPS for all downloads + uploads.
+echo "FILE_SERVER_ROOT = 'https://$SEAFILE_DOMAIN_NAME:$SEAFILE_DOMAIN_PORT/seafhttp'" \
+    >> /opt/seafile/seahub_settings.py
 
 # Manually run Seafile to trigger the first-run configuration wizard.
 ./seafile.sh start
