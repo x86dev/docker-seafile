@@ -79,7 +79,7 @@ Hint: Enter the IP of your **seafile-db** container, e.g. 172.17.0.2. Remember t
 Almost done! Now actually run Seafile using the database and the volume with:
 
 ```bash
-    docker run -d -t --dns=127.0.0.1 -p 10001:10001 -p 8082:8082 -p 12001:12001 -p 8080:8080 --volumes-from seafile-data --link seafile-db:db --name seafile x86dev/docker-seafile
+    docker run -d -t --dns=127.0.0.1 -p 10001:10001 -p 8082:8082 -p 12001:12001 -p 8080:8080 --volumes-from seafile-data --link seafile-db:db -e SEAFILE_DOMAIN_NAME=<yourdomain.tld> --name seafile x86dev/docker-seafile
 ```
 
 Seafile should now be running on your host at 
