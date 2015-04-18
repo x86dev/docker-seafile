@@ -6,7 +6,7 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get update && \
     apt-get install -y ca-certificates \
                        nginx \
-                       python2.7-mysqldb python-setuptools python-simplejson python-imaging \
+                       python2.7 python-flup python-imaging python-mysqldb python-setuptools \
                        sqlite3 dnsmasq
 
 ENV SERVER_NAME example
@@ -16,7 +16,7 @@ ENV ADMIN_PASSWORD changeme!
 
 RUN mkdir /opt/seafile
 WORKDIR /opt/seafile
-RUN curl -L -O https://bitbucket.org/haiwen/seafile/downloads/seafile-server_3.1.7_x86-64.tar.gz
+RUN curl -L -O https://bitbucket.org/haiwen/seafile/downloads/seafile-server_4.1.2_x86-64.tar.gz
 RUN tar xzf seafile-server_*
 RUN mkdir installed
 RUN mv seafile-server_* installed

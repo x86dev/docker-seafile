@@ -8,14 +8,20 @@ Idea and initial Dockerfile was based on https://github.com/alvistar/seafile-doc
 ## Features
 
 The image contains/adds the following:
+
 - Support for Seafile 3.x
 - Nginx for TLS (HTTPS) support
 - Self-signed certificates, generated automatically on first run
 - Runit for keeping the services up and running
 
+## Changelog
+
+- Added initial support for Seafile 4.x and using the official mysql Docker image. Stay tuned for updates.
+
 ## Architecture
 
 For running Seafile within Docker, three containers are needed, namely:
+
 - **seafile**, which contains the actual Seafile instance running on the server
 - **seafile-db**, the MySQL database container
 - **seafile-data**, the data container
@@ -25,11 +31,12 @@ your installation.
 
 ## Quickstart
 
-Create the MySQL database container by running: 
+Create the MySQL database container by running:
+
 ```bash
-    docker run -d -p 3306:3306 -e MYSQL_ROOT_PASSWORD=<password> -e MYSQL_DATABASE=seafile -e MYSQL_USER=seafile -e MYSQL_PASSWORD=<password> --name seafile-db orchardup/mysql
+    docker run -d -p 3306:3306 -e MYSQL_ROOT_PASSWORD=<password> -e MYSQL_DATABASE=seafile -e MYSQL_USER=seafile -e MYSQL_PASSWORD=<password> --name seafile-db mysql:latest
 ```
-This will create the needed container, based on [orchardup/mysql](https://index.docker.io/u/orchardup/mysql/). This also assumes that you're
+This will create the needed container, based on [mysql](https://registry.hub.docker.com/_/mysql/). This also assumes that you're
 not yet running another database at port 3306 on your host. In case you do, e.g. use
 ```
 -p 3307:3306
@@ -41,6 +48,8 @@ As we need the IP of your database container later, look it up by doing a:
 ```bash
 docker inspect "seafile-db" | grep IPAddress | cut -d '"' -f 4
 ```
+
+Note: IPv6 support is **not** implemented in this Dockerfile yet!
 
 Now, create the actual Seafile volume (for storing the actual data), using:
 

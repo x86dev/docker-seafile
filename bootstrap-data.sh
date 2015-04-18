@@ -37,7 +37,7 @@ sed -i -e "s/.*server_tokens.*/server_tokens off;/g" /etc/nginx/nginx.conf
 sed -i -e "s/.*daemon.*=.*/daemon = False/g" \
     /opt/seafile/seafile-server-*/runtime/seahub.conf
 
-# Execute Seafile's configuration script for setting up the database.
+# Execute Seafile's configuration script for setting up the MySQL database.
 cd /opt/seafile/seafile-server-*
 ./setup-seafile-mysql.sh
 
@@ -48,6 +48,8 @@ sed -i -e "s/.*SERVICE_URL.*=.*/SERVICE_URL = https:\/\/$SEAFILE_DOMAIN_NAME:$SE
 # Also patch Seahub's configuration to use HTTPS for all downloads + uploads.
 echo "FILE_SERVER_ROOT = 'https://$SEAFILE_DOMAIN_NAME:$SEAFILE_DOMAIN_PORT/seafhttp'" \
     >> /opt/seafile/seahub_settings.py
+
+## @todo Add memcached support!
 
 # Manually run Seafile to trigger the first-run configuration wizard.
 ./seafile.sh start
