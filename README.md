@@ -1,4 +1,4 @@
-Docker image for Seafile
+﻿Docker image for Seafile
 --------------------
 
 This Dockerfile installs latest [Seafile](https://www.seafile.com) with HTTPS (TLS) enabled by default.
@@ -54,7 +54,7 @@ Note: IPv6 support is **not** implemented in this Dockerfile yet!
 Now, create the actual Seafile volume (for storing the actual data), using:
 
 ```bash
-    docker run -it --dns=127.0.0.1 --link seafile-db:db --name seafile-data -e SEAFILE_DOMAIN_NAME=<yourdomain.tld> x86dev/docker-seafile bootstrap
+    docker run -it --dns=127.0.0.1 --link seafile-db:db -e SEAFILE_DOMAIN_NAME=<yourdomain.tld> --name seafile-data x86dev/docker-seafile:latest  bootstrap
 ```
 
 **Note:** The <yourdomain.tld> should either point to a IP or valid domain you want to run Seafile on. If you're running Docker on
