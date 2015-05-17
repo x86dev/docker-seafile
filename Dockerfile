@@ -52,4 +52,4 @@ VOLUME /etc/service/seahub
 
 ADD bootstrap-data.sh /usr/local/sbin/bootstrap
 CMD /sbin/my_init
-EXPOSE 22
+
